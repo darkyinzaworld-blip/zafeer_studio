@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAFEER STUDIO — Edit. Design. Motion. Web.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F2EFE6;
+    --bg:#0B0B0A;
+    --bg-2:#131210;
+    --card:#17150F;
+    --line:#2C2A24;
+    --orange:#FF3D1A;
+    --orange-dim:#7A2410;
+    --muted:#8A8779;
+    --grain-opacity:0.05;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+    overflow-x:hidden;
+    cursor:default;
+  }
+  ::selection{background:var(--orange);color:#0B0B0A;}
+
+  /* grain overlay */
+  .grain{
+    position:fixed;inset:0;pointer-events:none;z-index:999;
+    opacity:var(--grain-opacity);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+
+  .cursor-glow{
+    position:fixed;top:0;left:0;width:520px;height:520px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,61,26,0.10) 0%, rgba(255,61,26,0) 65%);
+    pointer-events:none;z-index:1;
+    transform:translate(-50%,-50%);
+    transition:opacity .3s;
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  /* NAV */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 5vw;
+    background:rgba(11,11,10,0.55);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid transparent;
+    transition:background .3s, border-color .3s;
+  }
+  header.scrolled{
+    background:rgba(11,11,10,0.85);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(24px,3vw,32px);
+    letter-spacing:1.5px;
+    color:var(--ink);
+    display:flex;align-items:center;
+    opacity:0;transform:translateY(-12px);
+    animation:riseInFade .7s .1s forwards;
+    text-shadow:0 0 24px rgba(255,61,26,0.25);
+  }
+  .logo span{
+    color:var(--orange);
+    display:inline-block;
+    animation:blink 1.6s infinite;
+  }
+  nav ul{
+    display:flex;gap:34px;list-style:none;
+    font-size:13px;text-transform:uppercase;letter-spacing:1.5px;
+    font-weight:600;
+  }
+  nav a{position:relative;padding-bottom:4px;}
+  nav a::after{
+    content:'';position:absolute;left:0;bottom:0;height:1px;width:0;
+    background:var(--ink);transition:width .35s cubic-bezier(.7,0,.2,1);
+  }
+  nav a:hover::after{width:100%;}
+  .nav-toggle{display:none;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:0 5vw;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .scope{
+    position:absolute;
+    right:-8vw;top:50%;
+    width:min(60vw,720px);height:min(60vw,720px);
+    transform:translateY(-50%);
+    opacity:.9;
+    animation:spin 40s linear infinite;
+  }
+  @keyframes spin{to{transform:translateY(-50%) rotate(360deg);}}
+  .scope circle{fill:none;stroke:var(--orange-dim);}
+  .scope .bright{stroke:var(--orange);}
+  .scope line{stroke:var(--orange-dim);}
+
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--orange);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:22px;
+    opacity:0;animation:riseIn .7s .1s forwards;
+  }
+  .eyebrow::before{
+    content:'';width:8px;height:8px;background:var(--orange);
+    display:inline-block;animation:blink 1.4s infinite;
+  }
+  @keyframes blink{50%{opacity:.15;}}
+
+  .hero h1{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(56px,11vw,168px);
+    line-height:.86;
+    letter-spacing:-1px;
+    text-transform:uppercase;
+    max-width:1100px;
+  }
+  .hero h1 .line{
+    display:block;overflow:hidden;
+  }
+  .hero h1 .line span{
+    display:inline-block;
+    transform:translateY(110%);
+    animation:riseIn .9s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .hero h1 .line:nth-child(1) span{animation-delay:.15s;}
+  .hero h1 .line:nth-child(2) span{animation-delay:.28s; color:var(--orange);}
+  @keyframes riseIn{to{transform:translateY(0);opacity:1;}}
+  @keyframes riseInFade{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .eyebrow{animation-name:riseInFade;}
+
+  .hero p{
+    margin-top:28px;
+    max-width:480px;
+    font-size:16px;line-height:1.6;
+    color:var(--muted);
+    opacity:0;animation:riseInFade .7s .6s forwards;
+  }
+  .hero-actions{
+    margin-top:40px;display:flex;gap:18px;flex-wrap:wrap;
+    opacity:0;animation:riseInFade .7s .75s forwards;
+  }
+  .btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;letter-spacing:1px;text-transform:uppercase;
+    padding:16px 30px;
+    border:1px solid var(--ink);
+    display:inline-flex;align-items:center;gap:10px;
+    position:relative;overflow:hidden;
+    transition:color .4s;
+  }
+  .btn.solid{background:var(--orange);border-color:var(--orange);color:#0B0B0A;font-weight:700;transition:transform .3s,filter .3s,box-shadow .3s;}
+  .btn:not(.solid)::before{
+    content:'';position:absolute;inset:0;background:var(--ink);
+    transform:translateY(101%);transition:transform .4s cubic-bezier(.7,0,.2,1);z-index:-1;
+  }
+  .btn:not(.solid):hover{color:#0B0B0A;}
+  .btn:not(.solid):hover::before{transform:translateY(0);}
+  .btn:not(.solid){transition:transform .3s,color .4s;}
+  .btn:not(.solid):hover{transform:translateY(-3px);}
+  .btn.solid:hover{filter:brightness(1.12);transform:translateY(-3px);box-shadow:0 14px 30px -10px rgba(255,61,26,0.5);}
+
+  /* MARQUEE */
+  .marquee{
+    border-bottom:1px solid var(--line);
+    background:var(--bg-2);
+    padding:20px 0;overflow:hidden;white-space:nowrap;
+  }
+  .marquee-track{display:inline-flex;animation:scroll 26s linear infinite;}
+  .marquee:hover .marquee-track{animation-play-state:paused;}
+  .marquee-track span{
+    font-family:'Anton',sans-serif;
+    font-size:22px;text-transform:uppercase;letter-spacing:1px;
+    padding:0 28px;color:var(--muted);
+    display:flex;align-items:center;gap:28px;
+  }
+  .marquee-track span i{color:var(--orange);font-style:normal;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  section{padding:130px 5vw;}
+  .section-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    gap:24px;margin-bottom:70px;flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+    padding-bottom:26px;
+  }
+  .section-head .tag{
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    letter-spacing:3px;text-transform:uppercase;color:var(--orange);
+  }
+  .section-head h2{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(34px,5vw,64px);
+    text-transform:uppercase;
+    letter-spacing:-.5px;
+    margin-top:10px;
+  }
+  .section-head p{max-width:340px;color:var(--muted);font-size:14px;line-height:1.6;}
+
+  .reveal{opacity:0;transform:translateY(36px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+  .reveal.show{opacity:1;transform:translateY(0);}
+  .service-row.reveal:nth-of-type(1){transition-delay:0s;}
+  .service-row.reveal:nth-of-type(2){transition-delay:.08s;}
+  .service-row.reveal:nth-of-type(3){transition-delay:.16s;}
+  .service-row.reveal:nth-of-type(4){transition-delay:.24s;}
+  .work-card.reveal:nth-of-type(1){transition-delay:0s;}
+  .work-card.reveal:nth-of-type(2){transition-delay:.1s;}
+  .work-card.reveal:nth-of-type(3){transition-delay:.2s;}
+  .work-card.reveal:nth-of-type(4){transition-delay:.3s;}
+  .strip .reveal:nth-of-type(1){transition-delay:0s;}
+  .strip .reveal:nth-of-type(2){transition-delay:.1s;}
+  .strip .reveal:nth-of-type(3){transition-delay:.2s;}
+
+  /* SERVICES */
+  .services{display:flex;flex-direction:column;}
+  .service-row{
+    display:grid;grid-template-columns:100px 1fr auto;align-items:center;
+    gap:30px;
+    padding:38px 0;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    transition:padding-left .35s cubic-bezier(.7,0,.2,1);
+  }
+  .service-row:hover{padding-left:20px;}
+  .service-row:hover .service-name{color:var(--orange);}
+  .service-row:hover .service-arrow{transform:translateX(0) rotate(0);opacity:1;}
+  .service-num{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:14px;}
+  .service-name{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(28px,4.4vw,58px);
+    text-transform:uppercase;
+    transition:color .3s;
+    line-height:1;
+  }
+  .service-tags{grid-column:2;display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+  .service-tags span{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+    border:1px solid var(--line);padding:5px 10px;text-transform:uppercase;letter-spacing:1px;
+  }
+  .service-arrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;letter-spacing:1px;text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;
+    color:var(--ink);
+    opacity:0;transform:translateX(-12px) rotate(-8deg);
+    transition:all .35s cubic-bezier(.7,0,.2,1);
+  }
+
+  /* WORK */
+  .work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--line);}
+  .work-card{
+    background:var(--card);
+    padding:38px;min-height:340px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    position:relative;overflow:hidden;
+    cursor:pointer;
+    transition:transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s;
+  }
+  .work-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
+    z-index:2;
+  }
+  .work-card::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(160deg,var(--orange) 0%,transparent 60%);
+    opacity:0;transition:opacity .5s;
+  }
+  .work-card:hover::before{opacity:.14;}
+  .price-tag{transition:transform .3s;}
+  .work-card:hover .price-tag{transform:scale(1.08);}
+  .work-top{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .price-tag{
+    background:var(--orange);color:#0B0B0A;padding:4px 10px;font-weight:700;
+  }
+  .work-title{
+    font-family:'Anton',sans-serif;font-size:clamp(26px,3vw,40px);
+    text-transform:uppercase;line-height:1.02;margin:26px 0 10px;
+    transition:transform .4s cubic-bezier(.7,0,.2,1);
+  }
+  .work-card:hover .work-title{transform:translateX(10px);}
+  .work-desc{color:var(--muted);font-size:14px;max-width:340px;}
+  .work-cta{
+    margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:12px;
+    letter-spacing:1.5px;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .work-cta svg{transition:transform .35s;}
+  .work-card:hover .work-cta svg{transform:translateX(6px);}
+
+  /* PROCESS / STATS strip */
+  .strip{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(3,1fr);
+    background:var(--bg-2);
+  }
+  .strip div{
+    padding:50px 30px;border-right:1px solid var(--line);text-align:left;
+  }
+  .strip div:last-child{border-right:none;}
+  .strip h3{font-family:'Anton',sans-serif;font-size:clamp(30px,4vw,52px);color:var(--orange);}
+  .strip p{color:var(--muted);font-size:13px;margin-top:8px;text-transform:uppercase;letter-spacing:1px;}
+
+  /* CONTACT */
+  .contact{
+    text-align:center;
+  }
+  .contact .section-head{justify-content:center;text-align:center;border:none;flex-direction:column;align-items:center;}
+  .contact-big{
+    font-family:'Anton',sans-serif;
+    font-size:clamp(38px,8vw,110px);
+    text-transform:uppercase;
+    line-height:.95;
+    margin:10px 0 50px;
+  }
+  .contact-big a{border-bottom:4px solid var(--orange);transition:color .3s,border-color .3s;}
+  .contact-big a:hover{color:var(--orange);border-color:var(--ink);}
+  .contact-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:2px;background:var(--line);max-width:1000px;margin:0 auto;
+  }
+  .contact-item{
+    background:var(--bg);padding:34px 20px;
+  }
+  .contact-item .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:block;}
+  .contact-item .v{font-size:17px;font-weight:600;}
+  .contact-item a:hover{color:var(--orange);}
+
+  footer{
+    padding:34px 5vw;display:flex;justify-content:space-between;align-items:center;
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+    flex-wrap:wrap;gap:12px;
+  }
+
+  @media (max-width:820px){
+    nav ul{display:none;}
+    .work-grid{grid-template-columns:1fr;}
+    .strip{grid-template-columns:1fr;}
+    .strip div{border-right:none;border-bottom:1px solid var(--line);}
+    .strip div:last-child{border-bottom:none;}
+    .service-row{grid-template-columns:50px 1fr;}
+    .service-arrow{grid-column:2;justify-content:flex-start;opacity:1;transform:none;margin-top:6px;position:static;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+    .logo, .eyebrow, .hero h1 .line span, .hero p, .hero-actions,
+    .reveal, .logo span{
+      opacity:1 !important;transform:none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="cursor-glow" id="glow"></div>
+
+<header>
+  <div class="logo">ZAFEER<span>.</span>STUDIO</div>
+  <nav>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero">
+  <svg class="scope" viewBox="0 0 400 400">
+    <circle class="bright" cx="200" cy="200" r="190" stroke-width="1"/>
+    <circle cx="200" cy="200" r="150" stroke-width="1"/>
+    <circle cx="200" cy="200" r="110" stroke-width="1"/>
+    <circle class="bright" cx="200" cy="200" r="4" fill="#FF3D1A"/>
+    <line x1="200" y1="0" x2="200" y2="60" stroke-width="1"/>
+    <line x1="200" y1="340" x2="200" y2="400" stroke-width="1"/>
+    <line x1="0" y1="200" x2="60" y2="200" stroke-width="1"/>
+    <line x1="340" y1="200" x2="400" y2="200" stroke-width="1"/>
+  </svg>
+
+  <div class="eyebrow">STUDIO / EST. 2024 — CAIRO</div>
+  <h1>
+    <span class="line"><span>ZAFEER</span></span>
+    <span class="line"><span>STUDIO</span></span>
+  </h1>
+  <p>We cut, design, animate and build. Video editing, graphic design, motion graphics and web design — made hard-hitting, on deadline, every time.</p>
+  <div class="hero-actions">
+    <a href="#work" class="btn solid">View the work →</a>
+    <a href="#contact" class="btn">Start a project</a>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span><i>01</i> VIDEO EDITING <i>—</i> 02 GRAPHIC DESIGN <i>—</i> 03 MOTION GRAPHICS <i>—</i> 04 WEB DESIGN <i>—</i></span>
+    <span><i>01</i> VIDEO EDITING <i>—</i> 02 GRAPHIC DESIGN <i>—</i> 03 MOTION GRAPHICS <i>—</i> 04 WEB DESIGN <i>—</i></span>
+  </div>
+</div>
+
+<section id="services">
+  <div class="section-head reveal">
+    <div>
+      <span class="tag">What we do</span>
+      <h2>Services</h2>
+    </div>
+    <p>Four disciplines, one studio. Pick one or stack them all into a single deadline.</p>
+  </div>
+
+  <div class="services">
+    <a class="service-row reveal" href="https://wa.me/201006738632?text=Hey%20Zafeer%20Studio%2C%20I%20need%20video%20editing" target="_blank">
+      <span class="service-num">01</span>
+      <div>
+        <span class="service-name">Video Editing</span>
+        <div class="service-tags"><span>Reels</span><span>YouTube</span><span>Color Grade</span><span>Sound Design</span></div>
+      </div>
+      <span class="service-arrow">Enquire →</span>
+    </a>
+    <a class="service-row reveal" href="https://wa.me/201006738632?text=Hey%20Zafeer%20Studio%2C%20I%20need%20graphic%20design" target="_blank">
+      <span class="service-num">02</span>
+      <div>
+        <span class="service-name">Graphic Design</span>
+        <div class="service-tags"><span>Branding</span><span>Posters</span><span>Social Kits</span><span>Print</span></div>
+      </div>
+      <span class="service-arrow">Enquire →</span>
+    </a>
+    <a class="service-row reveal" href="https://wa.me/201006738632?text=Hey%20Zafeer%20Studio%2C%20I%20need%20motion%20graphics" target="_blank">
+      <span class="service-num">03</span>
+      <div>
+        <span class="service-name">Motion Graphics</span>
+        <div class="service-tags"><span>Logo Stings</span><span>Explainers</span><span>Typography</span><span>3D</span></div>
+      </div>
+      <span class="service-arrow">Enquire →</span>
+    </a>
+    <a class="service-row reveal" href="https://wa.me/201006738632?text=Hey%20Zafeer%20Studio%2C%20I%20need%20a%20website" target="_blank">
+      <span class="service-num">04</span>
+      <div>
+        <span class="service-name">Web Design</span>
+        <div class="service-tags"><span>Landing Pages</span><span>Portfolios</span><span>Shops</span><span>Animation</span></div>
+      </div>
+      <span class="service-arrow">Enquire →</span>
+    </a>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="reveal"><h3>120+</h3><p>Projects Shipped</p></div>
+  <div class="reveal"><h3>4</h3><p>Disciplines</p></div>
+  <div class="reveal"><h3>100%</h3><p>Own Every Frame</p></div>
+</div>
+
+<section id="work">
+  <div class="section-head reveal">
+    <div>
+      <span class="tag">Selected & for sale</span>
+      <h2>Work</h2>
+    </div>
+    <p>Finished projects, ready to license, plus templates built to drop your brand straight in.</p>
+  </div>
+
+  <div class="work-grid">
+    <div class="work-card reveal">
+      <div class="work-top"><span>Video Template</span><span class="price-tag">$45</span></div>
+      <div>
+        <div class="work-title">Cinematic Reel Pack</div>
+        <div class="work-desc">A drag-and-drop Premiere Pro template built for punchy vertical reels and trailers.</div>
+      </div>
+      <div class="work-cta">View project <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </div>
+    <div class="work-card reveal">
+      <div class="work-top"><span>Brand Identity</span><span class="price-tag">$120</span></div>
+      <div>
+        <div class="work-title">Kinetic Logo System</div>
+        <div class="work-desc">Full logo + animated sting + brand guide, ready to hand to any client.</div>
+      </div>
+      <div class="work-cta">View project <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </div>
+    <div class="work-card reveal">
+      <div class="work-top"><span>Motion Pack</span><span class="price-tag">$60</span></div>
+      <div>
+        <div class="work-title">Typography Impact Kit</div>
+        <div class="work-desc">After Effects title pack with 20 bold, high-impact type animations.</div>
+      </div>
+      <div class="work-cta">View project <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </div>
+    <div class="work-card reveal">
+      <div class="work-top"><span>Web Template</span><span class="price-tag">$90</span></div>
+      <div>
+        <div class="work-title">Studio Portfolio Site</div>
+        <div class="work-desc">A one-page animated portfolio template — the exact system this site runs on.</div>
+      </div>
+      <div class="work-cta">View project <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="section-head reveal">
+    <span class="tag">Let's talk</span>
+    <h2>Contact</h2>
+  </div>
+  <div class="contact-big reveal">
+    <a href="https://wa.me/201006738632">Start your project →</a>
+  </div>
+  <div class="contact-grid reveal">
+    <div class="contact-item">
+      <span class="k">WhatsApp</span>
+      <a class="v" href="https://wa.me/201006738632">+20 100 673 8632</a>
+    </div>
+    <div class="contact-item">
+      <span class="k">Email</span>
+      <a class="v" href="mailto:zafeermarketing.hr@gmail.com">zafeermarketing.hr@gmail.com</a>
+    </div>
+    <div class="contact-item">
+      <span class="k">Instagram</span>
+      <a class="v" href="https://www.instagram.com/zafeer_studio" target="_blank">@zafeer_studio</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Zafeer Studio — All frames reserved.</span>
+  <span>Video · Graphic · Motion · Web</span>
+</footer>
+
+<script>
+  // safety net: force key elements visible shortly after load,
+  // in case any animation fails to fire for any reason
+  window.addEventListener('load', ()=>{
+    setTimeout(()=>{
+      document.querySelectorAll('.logo, .eyebrow, .hero h1 .line span, .hero p, .hero-actions').forEach(el=>{
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }, 1500);
+  });
+
+  // header background on scroll
+  const header = document.querySelector('header');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 40){ header.classList.add('scrolled'); }
+    else{ header.classList.remove('scrolled'); }
+  });
+
+  // cursor glow
+  const glow = document.getElementById('glow');
+  window.addEventListener('mousemove', e=>{
+    glow.style.left = e.clientX+'px';
+    glow.style.top = e.clientY+'px';
+  });
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
