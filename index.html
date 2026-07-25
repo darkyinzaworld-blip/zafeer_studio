@@ -13,8 +13,8 @@
     --bg-2:#131210;
     --card:#17150F;
     --line:#2C2A24;
-    --orange:#FF3D1A;
-    --orange-dim:#7A2410;
+    --orange:#FBBD2E;
+    --orange-dim:#8A6A15;
     --muted:#8A8779;
     --grain-opacity:0.05;
   }
@@ -40,7 +40,7 @@
   .cursor-glow{
     position:fixed;top:0;left:0;width:520px;height:520px;
     border-radius:50%;
-    background:radial-gradient(circle, rgba(255,61,26,0.10) 0%, rgba(255,61,26,0) 65%);
+    background:radial-gradient(circle, rgba(251,189,46,0.10) 0%, rgba(251,189,46,0) 65%);
     pointer-events:none;z-index:1;
     transform:translate(-50%,-50%);
     transition:opacity .3s;
@@ -71,7 +71,7 @@
     display:flex;align-items:center;
     opacity:0;transform:translateY(-12px);
     animation:riseInFade .7s .1s forwards;
-    text-shadow:0 0 24px rgba(255,61,26,0.25);
+    text-shadow:0 0 24px rgba(251,189,46,0.25);
   }
   .logo span{
     color:var(--orange);
@@ -190,7 +190,7 @@
   .btn:not(.solid):hover::before{transform:translateY(0);}
   .btn:not(.solid){transition:transform .3s,color .4s;}
   .btn:not(.solid):hover{transform:translateY(-3px);}
-  .btn.solid:hover{filter:brightness(1.12);transform:translateY(-3px);box-shadow:0 14px 30px -10px rgba(255,61,26,0.5);}
+  .btn.solid:hover{filter:brightness(1.12);transform:translateY(-3px);box-shadow:0 14px 30px -10px rgba(251,189,46,0.5);}
 
   /* MARQUEE */
   .marquee{
@@ -304,6 +304,10 @@
   .work-top{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
   .price-tag{
     background:var(--orange);color:#0B0B0A;padding:4px 10px;font-weight:700;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .price-tag .old-price{
+    font-weight:500;opacity:.6;font-size:.85em;text-decoration:line-through;
   }
   .work-title{
     font-family:'Anton',sans-serif;font-size:clamp(26px,3vw,40px);
@@ -380,7 +384,7 @@
   .logo-item:hover img{transform:scale(1.06);filter:grayscale(0);}
   .logo-item::after{
     content:'';position:absolute;inset:0;
-    box-shadow:inset 0 0 0 1px rgba(255,61,26,0);
+    box-shadow:inset 0 0 0 1px rgba(251,189,46,0);
     transition:box-shadow .35s;pointer-events:none;
   }
   .logo-item:hover::after{box-shadow:inset 0 0 0 2px var(--orange);}
@@ -388,6 +392,10 @@
   .video-grid{
     display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
   }
+  .video-grid.shorts-grid{
+    grid-template-columns:repeat(4,1fr);margin-top:18px;
+  }
+  .video-item.featured{grid-column:1 / -1;}
   .video-item{
     background:var(--card);border:1px solid var(--line);
     overflow:hidden;
@@ -446,9 +454,130 @@
       opacity:1 !important;transform:none !important;
     }
   }
+  /* ===== INTRO: breathing skeleton (Zafeer = exhale) ===== */
+  #introOverlay{
+    position:fixed;inset:0;z-index:9999;
+    background:radial-gradient(circle at 50% 45%,#151412 0%,#0B0B0A 70%);
+    display:flex;align-items:center;justify-content:center;
+    perspective:1200px;overflow:hidden;
+    transition:opacity 1s ease, visibility 1s;
+  }
+  #introOverlay.hide{opacity:0;visibility:hidden;pointer-events:none;}
+  .skeleton-3d{
+    position:relative;width:min(58vw,300px);height:min(78vw,480px);
+    animation:skeletonTurn 9s ease-in-out infinite;
+  }
+  .skeleton-3d svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+  .ribs-anim{
+    transform-origin:150px 235px;
+    animation:breathe 4.2s ease-in-out infinite;
+  }
+  @keyframes skeletonTurn{
+    0%,100%{transform:rotateY(-16deg);}
+    50%{transform:rotateY(16deg);}
+  }
+  @keyframes breathe{
+    0%{transform:scale(1);}
+    38%{transform:scale(1.07);}
+    52%{transform:scale(0.95);}
+    100%{transform:scale(1);}
+  }
+  .smoke-wrap{
+    position:absolute;left:50%;top:20%;width:4px;height:4px;
+  }
+  .smoke-puff{
+    position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;
+    background:radial-gradient(circle,rgba(230,225,215,0.55) 0%,rgba(230,225,215,0) 70%);
+    filter:blur(3px);
+    opacity:0;
+    animation:puff 4.2s ease-out infinite;
+  }
+  .smoke-puff:nth-child(1){animation-delay:0s;left:-6px;}
+  .smoke-puff:nth-child(2){animation-delay:.15s;left:6px;}
+  .smoke-puff:nth-child(3){animation-delay:.3s;left:-2px;}
+  .smoke-puff:nth-child(4){animation-delay:.45s;left:10px;}
+  @keyframes puff{
+    0%{opacity:0;transform:translate(0,0) scale(.4);}
+    45%{opacity:0;}
+    55%{opacity:.85;transform:translate(var(--dx,0),-20px) scale(1);}
+    100%{opacity:0;transform:translate(calc(var(--dx,0) * 3),-95px) scale(2.3);filter:blur(9px);}
+  }
+  .smoke-puff:nth-child(1){--dx:-14px;}
+  .smoke-puff:nth-child(2){--dx:10px;}
+  .smoke-puff:nth-child(3){--dx:-6px;}
+  .smoke-puff:nth-child(4){--dx:16px;}
+
+  .intro-word{
+    position:absolute;bottom:9%;left:50%;transform:translateX(-50%);
+    font-family:'Anton',sans-serif;letter-spacing:3px;
+    font-size:clamp(20px,3vw,28px);color:var(--ink);
+    opacity:0;animation:introWordFade 9s ease-in-out infinite;
+    text-align:center;white-space:nowrap;
+  }
+  .intro-word span{color:var(--orange);}
+  @keyframes introWordFade{
+    0%,100%{opacity:0;}
+    45%{opacity:0;}
+    55%{opacity:1;}
+    85%{opacity:1;}
+    95%{opacity:0;}
+  }
+  .intro-skip{
+    position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;
+    color:var(--muted);text-transform:uppercase;cursor:pointer;
+    border:1px solid var(--line);padding:8px 16px;background:none;
+    transition:border-color .3s,color .3s;
+  }
+  .intro-skip:hover{border-color:var(--orange);color:var(--ink);}
+  @media (prefers-reduced-motion:reduce){
+    #introOverlay{display:none !important;}
+  }
 </style>
 </head>
 <body>
+
+<div id="introOverlay">
+  <div class="skeleton-3d">
+    <svg viewBox="0 0 300 640" fill="none" stroke="#F2EFE6" stroke-width="2.4">
+      <!-- Spine (drawn first, sits behind ribs) -->
+      <line x1="150" y1="176" x2="150" y2="560" stroke-width="3"/>
+      <path d="M138 200h24M138 224h24M138 248h24M138 272h24M138 296h24M138 320h24M138 344h24M138 368h24M138 392h24M138 416h24M138 440h24M138 464h24M138 488h24M138 512h24M138 536h24" stroke-width="1.3" opacity=".55"/>
+
+      <!-- Skull -->
+      <ellipse cx="150" cy="95" rx="58" ry="65"/>
+      <ellipse cx="126" cy="98" rx="15" ry="18" fill="#0B0B0A" stroke="#F2EFE6"/>
+      <ellipse cx="174" cy="98" rx="15" ry="18" fill="#0B0B0A" stroke="#F2EFE6"/>
+      <path d="M150 118 L140 145 L160 145 Z" fill="#0B0B0A"/>
+      <path d="M118 160h64M126 160v16M140 160v20M150 160v16M160 160v20M174 160v16"/>
+      <path d="M95 90c-5 12-5 22 0 32M205 90c5 12 5 22 0 32" stroke-width="1.6"/>
+
+      <!-- Ribcage (animated breathing group) -->
+      <g class="ribs-anim">
+        <line x1="150" y1="190" x2="150" y2="330" stroke-width="2.8"/>
+        <path d="M150 200C120 205 95 218 82 238"/><path d="M150 200C180 205 205 218 218 238"/>
+        <path d="M150 225C115 230 88 245 72 268"/><path d="M150 225C185 230 212 245 228 268"/>
+        <path d="M150 250C112 256 82 272 64 298"/><path d="M150 250C188 256 218 272 236 298"/>
+        <path d="M150 275C110 282 78 300 58 328"/><path d="M150 275C190 282 222 300 242 328"/>
+        <path d="M150 300C108 308 74 328 54 358"/><path d="M150 300C192 308 226 328 246 358"/>
+      </g>
+
+      <!-- Pelvis -->
+      <path d="M150 560v14"/>
+      <path d="M96 590c-8 18 2 40 20 46 14 4 26-6 28-20l6-30"/>
+      <path d="M204 590c8 18-2 40-20 46-14 4-26-6-28-20l-6-30"/>
+    </svg>
+
+    <div class="smoke-wrap">
+      <span class="smoke-puff"></span>
+      <span class="smoke-puff"></span>
+      <span class="smoke-puff"></span>
+      <span class="smoke-puff"></span>
+    </div>
+  </div>
+  <div class="intro-word">ز<span>فير</span></div>
+  <button class="intro-skip" id="introSkip">Skip</button>
+</div>
 
 <div class="grain"></div>
 <div class="cursor-glow" id="glow"></div>
@@ -556,33 +685,33 @@
       <span class="tag">Selected & for sale</span>
       <h2>Work</h2>
     </div>
-    <p>Finished projects, ready to license, plus templates built to drop your brand straight in.</p>
+    <p>Pay per project, or lock in a monthly package for steady, ongoing content.</p>
   </div>
 
   <div class="work-grid">
     <div class="work-card reveal">
-      <div class="work-top"><span>Video Template</span><span class="price-tag">$15</span></div>
+      <div class="work-top"><span>Per Project</span><span class="price-tag">$???</span></div>
       <div>
-        <div class="work-title">Cinematic Reel Pack</div>
-        <div class="work-desc">A drag-and-drop Premiere Pro template built for punchy vertical reels and trailers.</div>
+        <div class="work-title">Single Project</div>
+        <div class="work-desc">Price depends on project type — video edit, motion graphics, or logo design. Get a custom quote for your project.</div>
       </div>
-      <div class="work-cta">View project <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="work-cta">Get a quote <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
     </div>
     <div class="work-card reveal">
-      <div class="work-top"><span>Brand Identity</span><span class="price-tag">$15</span></div>
+      <div class="work-top"><span>Monthly Package</span><span class="price-tag"><s class="old-price">$900</s> $600</span></div>
       <div>
-        <div class="work-title">Kinetic Logo System</div>
-        <div class="work-desc">Full logo + animated sting + brand guide, ready to hand to any client.</div>
+        <div class="work-title">Starter Package</div>
+        <div class="work-desc">5 to 9 videos per month — steady content flow for growing brands and creators.</div>
       </div>
-      <div class="work-cta">View project <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="work-cta">Get a quote <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
     </div>
     <div class="work-card reveal">
-      <div class="work-top"><span>Motion Pack</span><span class="price-tag">$15</span></div>
+      <div class="work-top"><span>Monthly Package</span><span class="price-tag"><s class="old-price">$1800</s> $1100</span></div>
       <div>
-        <div class="work-title">Typography Impact Kit</div>
-        <div class="work-desc">After Effects title pack with 20 bold, high-impact type animations.</div>
+        <div class="work-title">Pro Package</div>
+        <div class="work-desc">10 to 15 projects per month — full-scale content production for busy brands.</div>
       </div>
-      <div class="work-cta">View project <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="work-cta">Get a quote <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
     </div>
   </div>
 </section>
@@ -617,24 +746,26 @@
 
   <div class="portfolio-sub reveal">Video Editing & Motion</div>
   <div class="video-grid">
-    <div class="video-item reveal">
-      <div class="video-frame wide"><iframe src="https://www.youtube.com/embed/lWMUPTDOtlA" title="Zafeer Studio — Video Edit 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <div class="video-item reveal featured">
+      <div class="video-frame wide"><iframe src="https://www.youtube.com/embed/lWMUPTDOtlA?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0" title="Zafeer Studio — Video Edit 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
       <div class="video-label">Edit 01</div>
     </div>
+  </div>
+  <div class="video-grid shorts-grid">
     <div class="video-item reveal">
-      <div class="video-frame"><iframe src="https://www.youtube.com/embed/lwRzVcBPtQw" title="Zafeer Studio — Motion 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/lwRzVcBPtQw?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0" title="Zafeer Studio — Motion 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
       <div class="video-label">Edit 02</div>
     </div>
     <div class="video-item reveal">
-      <div class="video-frame"><iframe src="https://www.youtube.com/embed/uYZiShJCUgE" title="Zafeer Studio — Motion 3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/uYZiShJCUgE?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0" title="Zafeer Studio — Motion 3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
       <div class="video-label">Edit 03</div>
     </div>
     <div class="video-item reveal">
-      <div class="video-frame"><iframe src="https://www.youtube.com/embed/m9wOT9FI0TQ" title="Zafeer Studio — Motion 4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/m9wOT9FI0TQ?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0" title="Zafeer Studio — Motion 4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
       <div class="video-label">Edit 04</div>
     </div>
     <div class="video-item reveal">
-      <div class="video-frame"><iframe src="https://www.youtube.com/embed/P4tNf6kKEJ8" title="Zafeer Studio — Motion 5" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/P4tNf6kKEJ8?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0" title="Zafeer Studio — Motion 5" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
       <div class="video-label">Edit 05</div>
     </div>
   </div>
@@ -680,6 +811,20 @@
       });
     }, 1500);
   });
+
+  // intro skeleton overlay
+  const introOverlay = document.getElementById('introOverlay');
+  const introSkip = document.getElementById('introSkip');
+  function hideIntro(){
+    introOverlay.classList.add('hide');
+    sessionStorage.setItem('zafeerIntroSeen','1');
+  }
+  if(sessionStorage.getItem('zafeerIntroSeen')){
+    introOverlay.style.display='none';
+  } else {
+    introSkip.addEventListener('click', hideIntro);
+    setTimeout(hideIntro, 4600);
+  }
 
   // mobile menu toggle
   const menuBtn = document.getElementById('menuBtn');
